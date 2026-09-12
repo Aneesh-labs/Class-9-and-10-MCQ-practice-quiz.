@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QuizMaster Mobile - Practice & Exam Prep</title>
+    <title>QuizMaster Mobile - Practice & Flashcards</title>
+    <meta name="theme-color" content="#1e1e2e">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --bg-color: #11111b;
+            --card-bg: #1e1e2e;
+            --card-border: #313244;
+            --accent: #89b4fa;
+            --accent-hover: #b4befe;
+            --text-main: #cdd6f4;
+            --text-muted: #a6adc8;
+            --success: #a6e3a1;
+            --success-bg: rgba(166, 227, 161, 0.15);
+            --danger: #f38ba8;
+            --danger-bg: rgba(243, 139, 168, 0.15);
+            --warning: #f9e2af;
+            --warning-bg: rgba(249, 226, 175, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            gap: 14px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+        }
+
+        header h1 {
+            font-size: 1.2rem;
+            font-size: 1.15rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: var(--card-border);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Top Segmented Tab Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 5px;
+            border-radius: 14px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 11px 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .nav-tab.active {
+            background: var(--accent);
+            color: #11111b;
+            box-shadow: 0 4px 12px rgba(137, 180, 250, 0.25);
+        }
+
+        .nav-tab:not(.active):hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls-card {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select,
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 1px solid var(--card-border);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: var(--bg-color);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2389b4fa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px 18px;
+            padding-right: 42px;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.25);
+        }
+
+        select option {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            padding: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #11111b;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(137, 180, 250, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: rgba(137, 180, 250, 0.12);
+            color: var(--accent);
+            border: 1px solid rgba(137, 180, 250, 0.3);
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(137, 180, 250, 0.2);
+            border-color: var(--accent);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-text {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-text:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--card-border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            line-height: 1.5;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            white-space: pre-line;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--bg-color);
+            color: var(--text-main);
+            text-align: left;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid var(--card-border);
+            line-height: 1.4;
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent);
+            background: rgba(137, 180, 250, 0.1);
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .option-btn.wrong {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .explanation-box {
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            display: none;
+        }
+
+        .explanation-box strong {
+            color: var(--warning);
+        }
+
+        .summary-stats {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* 🗂️ FLASHCARD STYLES */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 100%;
+            margin: 10px 0 16px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            min-height: 320px;
+            transform-style: preserve-3d;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 320px;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            overflow-y: auto;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(150deg, #1e1e2e 0%, #161622 100%);
+            border-color: #313244;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(150deg, #161622 0%, #1c1d2d 100%);
+            border-color: rgba(137, 180, 250, 0.45);
+            transform: rotateY(180deg);
+        }
+
+        .fc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+
+        .fc-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(137, 180, 250, 0.15);
+            color: var(--accent);
+        }
+
+        .fc-tag.answer-tag {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .fc-flip-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fc-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .fc-prompt {
+            font-size: 1.12rem;
+            line-height: 1.55;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: pre-line;
+        }
+
+        .fc-answer-box {
+            background: var(--success-bg);
+            border: 1.5px solid var(--success);
+            color: var(--success);
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .fc-explanation {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            color: var(--text-main);
+        }
+
+        .fc-explanation strong {
+            color: var(--warning);
+        }
+
+        .fc-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fc-hint-box {
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--warning);
+            line-height: 1.4;
+        }
+
+        .fc-nav-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .fc-nav-controls button {
+            padding: 12px;
+        }
+
+        .fc-notice {
+            background: rgba(137, 180, 250, 0.12);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            margin-top: auto;
+            padding-top: 20px;
+            padding-top: 16px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>📚 QuizMaster Mobile</h1>
+            <span class="badge" id="categoryBadge">Quiz Mode</span>
+        </header>
+
+        <!-- Mode Navigation Tabs -->
+        <nav class="nav-tabs" aria-label="Study Modes">
+            <button class="nav-tab active" id="tabQuizBtn" type="button">📝 Practice Quiz</button>
+            <button class="nav-tab" id="tabFlashcardsBtn" type="button">🗂️ Flashcards (50-60%)</button>
+        </nav>
+
+        <!-- ============================================== -->
+        <!-- VIEW 1: PRACTICE QUIZ SECTION                  -->
+        <!-- ============================================== -->
+        <main id="quizSectionView">
+            
+            <!-- Setup Screen -->
+            <div id="setupScreen" class="card controls-card">
+                <div>
+                    <label for="categorySelect">Select Subject / Category</label>
+                    <select id="categorySelect" style="margin-top: 6px;"></select>
+                </div>
+                <div>
+                    <label for="questionCountSelect">Number of Questions</label>
+                    <select id="questionCountSelect" style="margin-top: 6px;">
+                        <option value="10">10 Questions</option>
+                        <option value="20" selected>20 Questions</option>
+                        <option value="50">50 Questions</option>
+                        <option value="100">100 Questions</option>
+                        <option value="all">All Available Questions</option>
+                    </select>
+                </div>
+                <button id="startQuizBtn" class="primary-btn">▶ Start Quiz</button>
+                <div style="margin-top: 15px; text-align: center;">
+                    <button id="openFlashcardsFromQuizBtn" class="secondary-btn" style="width: 100%;">🗂️ Study Flashcards Instead</button>
+                </div>
+            </div>
+
+            <!-- Quiz Play Screen -->
+            <div id="quizScreen" class="hidden">
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div class="header-stats">
+                    <span id="questionCounter">Question 1/20</span>
+                    <span id="scoreCounter" class="score-text">Score: 0</span>
+                </div>
+
+                <div class="card" style="margin-bottom: 20px;">
+                    <div id="sectionBadge" class="badge" style="margin-bottom: 12px; display: inline-block;">🏷️ General</div>
+                    <div id="questionText" class="question-prompt"></div>
+                </div>
+
+                <div id="optionsGrid" class="options-container">
+                    <!-- Options populated by JS -->
+                </div>
+
+                <div id="explanationBox" class="explanation-box" style="display: none;">
+                    <strong>💡 Explanation:</strong> <span id="explanationText"></span>
+                </div>
+
+                <button id="nextBtn" class="primary-btn hidden" style="margin-top: 20px;">Next Question ▶</button>
+            </div>
+
+            <!-- Summary Screen -->
+            <div id="summaryScreen" class="card hidden" style="text-align: center; padding: 40px 20px;">
+                <div class="score-circle" id="scoreCircle">0%</div>
+                <h2>Quiz Complete!</h2>
+                <p id="summaryText" style="color: var(--text-secondary); margin: 15px 0 30px;">You scored 0 out of 0 questions correctly.</p>
+                <button id="restartBtn" class="primary-btn" style="margin-bottom: 15px;">↺ Take Another Quiz</button>
+                <button id="quizSummaryToFlashcardsBtn" class="secondary-btn" style="width: 100%;">🗂️ Review with Flashcards</button>
+            </div>
+        </main>
+
+        <!-- ============================================== -->
+        <!-- VIEW 2: FLASHCARDS SECTION                     -->
+        <!-- ============================================== -->
+        <main id="flashcardsSectionView" class="hidden">
+            
+            <!-- Setup Screen -->
+            <div id="fcSetupScreen" class="card controls-card">
+                <h3>🗂️ Flashcard Study Mode</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 15px;">
+                    Review a random 50%–60% sample of questions from each category as study cards.
+                </p>
+
+                <div>
+                    <label for="fcCategorySelect">Select Section / Subject</label>
+                    <select id="fcCategorySelect" style="margin-top: 6px;"></select>
+                </div>
+                
+                <div id="fcReshuffleNotice" class="hidden" style="color: var(--success); font-weight: 500; font-size: 0.9rem; text-align: center; margin-bottom: 15px;"></div>
+
+                <button id="startFlashcardsBtn" class="primary-btn">▶ Start Studying Deck</button>
+                <button id="reshuffleSampleBtn" class="secondary-btn" style="width: 100%; margin-top: 12px;">🎲 Reshuffle 50% Sample</button>
+                
+                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+                
+                <button id="fcSwitchToQuizBtn" class="secondary-btn" style="width: 100%;">📝 Take a Quiz Instead</button>
+            </div>
+
+            <!-- Study Play Screen -->
+            <div id="fcStudyScreen" class="hidden">
+                <div class="progress-container">
+                    <div class="progress-bar" id="fcProgressBar" style="background: var(--accent-color);"></div>
+                </div>
+                
+                <div class="header-stats" style="margin-bottom: 10px;">
+                    <span id="fcCounter">Card 1 / 10</span>
+                    <button id="fcBackToSetupBtn" class="secondary-btn" style="padding: 6px 12px; font-size: 0.85rem; width: auto; margin: 0;">Back to Deck</button>
+                </div>
+
+                <div class="card flashcard-container" id="flashcardWrapper">
+                    <div class="flashcard" id="flashcardCard">
+                        <!-- Front Face -->
+                        <div class="flashcard-face flashcard-front">
+                            <div id="fcSectionBadge" class="badge" style="margin-bottom: 15px;">🏷️ General</div>
+                            <div id="fcPromptText" class="question-prompt" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; text-align: center;"></div>
+                            
+                            <!-- Optional Hint -->
+                            <div style="margin-top: 15px;">
+                                <button id="fcHintToggleBtn" class="secondary-btn hidden" style="padding: 6px 12px; font-size: 0.85rem; width: auto;">💡 Show Hint</button>
+                                <div id="fcHintBox" class="explanation-box hidden" style="margin-top: 10px; font-size: 0.9rem; text-align: left;"></div>
+                            </div>
+
+                            <p class="flip-hint">Tap card or press Space to flip ↺</p>
+                        </div>
+                        
+                        <!-- Back Face -->
+                        <div class="flashcard-face flashcard-back">
+                            <div class="badge" style="background: var(--success); color: white; border: none; margin-bottom: 15px;">Answer</div>
+                            <div id="fcAnswerText" style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); text-align: center; margin-bottom: 20px;"></div>
+                            <div id="fcExplanationText" class="explanation-box" style="display: block; text-align: left; font-size: 0.95rem; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flashcard Controls -->
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="fcPrevBtn" class="secondary-btn" style="flex: 1;" disabled>◀ Prev</button>
+                    <button id="fcFlipBtn" class="primary-btn" style="flex: 1.5; background: var(--accent-color);">↺ Flip</button>
+                    <button id="fcNextBtn" class="primary-btn" style="flex: 1;">Next ▶</button>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="fcShuffleCurrentBtn" class="secondary-btn" style="width: auto; padding: 8px 20px; font-size: 0.9rem;">🔀 Shuffle Current Deck</button>
+                </div>
+            </div>
+
+            <!-- Flashcard Completion Screen -->
+            <div id="fcCompleteScreen" class="card hidden" style="text-align: center; padding: 40px 20px;">
+                <div class="score-circle" id="fcCompleteCircle" style="border-color: var(--accent-color); color: var(--accent-color);">100%</div>
+                <h2>Deck Complete!</h2>
+                <p id="fcCompleteText" style="color: var(--text-secondary); margin: 15px 0 30px;">You reviewed all cards in this section.</p>
+                <button id="fcRestartSectionBtn" class="primary-btn" style="margin-bottom: 15px; background: var(--accent-color);">↺ Study Deck Again</button>
+                <button id="fcPickAnotherBtn" class="secondary-btn" style="width: 100%;">🗂️ Pick Another Deck</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Load data first, then app logic -->
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
